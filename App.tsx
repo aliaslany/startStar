@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { Upload, FileText, CheckCircle2, ArrowRight, BookOpen, Loader2, RefreshCw, Send, Paperclip, X, Image as ImageIcon } from 'lucide-react';
+import { Upload, FileText, CheckCircle2, ArrowRight, BookOpen, Loader2, RefreshCw, Send, Paperclip, X, Image as ImageIcon, Wallet, LogOut, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
+import { auth, signInWithGoogle, logOut } from './firebase';
+import { User } from 'firebase/auth';
 
 type ChatMessage = {
   id: string;
@@ -18,9 +20,77 @@ export default function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   
+  // Auth & Billing State
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [balance, setBalance] = useState<number | null>(null);
+  const [showChargeModal, setShowChargeModal] = useState(false);
+  const [chargeAmount, setChargeAmount] = useState('5000');
+  const [isCharging, setIsCharging] = useState(false);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auth Listener
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
+      setAuthLoading(false);
+      if (currentUser) {
+        fetchBalance(currentUser);
+      } else {
+        setBalance(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const fetchBalance = async (currentUser: User) => {
+    try {
+      const token = await currentUser.getIdToken();
+      const res = await fetch('/api/balance', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setBalance(data.balance);
+      }
+    } catch (e) {
+      console.error('Error fetching balance', e);
+    }
+  };
+
+  const handleCharge = async () => {
+    if (!user) return;
+    const amount = parseInt(chargeAmount);
+    if (isNaN(amount) || amount <= 0) return;
+    
+    setIsCharging(true);
+    try {
+      const token = await user.getIdToken();
+      const res = await fetch('/api/charge', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ amount })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setBalance(prev => (prev || 0) + amount);
+        setShowChargeModal(false);
+      } else {
+        alert('خطا در شارژ حساب');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('خطا در شارژ حساب');
+    } finally {
+      setIsCharging(false);
+    }
+  };
 
   // Auto-scroll to bottom
   const scrollToBottom = () => {
@@ -135,13 +205,28 @@ export default function App() {
     }
 
     try {
+      const token = user ? await user.getIdToken() : '';
       const response = await fetch('/api/chat', {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
         body: formData,
       });
 
-      if (!response.ok) throw new Error('خطا در ارتباط با سرور.');
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('لطفا ابتدا وارد حساب کاربری خود شوید.');
+        }
+        if (response.status === 402) {
+          throw new Error('موجودی شما ناکافی است. لطفا حساب خود را شارژ کنید.');
+        }
+        throw new Error('خطا در ارتباط با سرور.');
+      }
       if (!response.body) throw new Error('ReadableStream not supported.');
+
+      // Update balance locally assuming 1000 cost
+      setBalance(prev => prev !== null ? prev - 1000 : null);
 
       // Add a placeholder message for the assistant
       const assistantMessageId = crypto.randomUUID();
@@ -232,16 +317,115 @@ export default function App() {
 
       {/* Header */}
       <header className="flex-none bg-[#0B0F19]/80 backdrop-blur-md border-b border-gray-800/50 p-4 sticky top-0 z-20">
-        <div className="max-w-4xl mx-auto flex items-center gap-4">
-          <div className="bg-indigo-500/20 p-2.5 rounded-xl border border-indigo-500/20">
-            <BookOpen className="w-6 h-6 text-indigo-400" />
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="bg-indigo-500/20 p-2.5 rounded-xl border border-indigo-500/20">
+              <BookOpen className="w-6 h-6 text-indigo-400" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-white tracking-tight">ExamBuddy</h1>
+              <p className="text-sm text-gray-400 hidden sm:block">دستیار هوشمند امتحانات شما</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-white tracking-tight">ExamBuddy</h1>
-            <p className="text-sm text-gray-400">دستیار هوشمند امتحانات شما</p>
+          
+          <div className="flex items-center gap-4">
+            {authLoading ? (
+              <Loader2 className="w-5 h-5 text-indigo-400 animate-spin" />
+            ) : user ? (
+              <div className="flex items-center gap-3">
+                <div className="bg-gray-800 border border-gray-700 px-3 py-1.5 rounded-full flex items-center gap-2">
+                  <Wallet className="w-4 h-4 text-emerald-400" />
+                  <span className="text-sm font-medium text-gray-200">
+                    {balance !== null ? balance.toLocaleString('fa-IR') : '...'} تومان
+                  </span>
+                  <button 
+                    onClick={() => setShowChargeModal(true)}
+                    className="ml-2 bg-indigo-600 hover:bg-indigo-500 p-1 rounded-full text-white transition-colors"
+                  >
+                    <Plus className="w-3 h-3" />
+                  </button>
+                </div>
+                <div className="relative group cursor-pointer">
+                  <img src={user.photoURL || ''} alt="avatar" className="w-9 h-9 rounded-full border border-gray-700" />
+                  <div className="absolute top-full right-0 mt-2 bg-gray-800 border border-gray-700 rounded-xl shadow-xl p-2 hidden group-hover:block min-w-[150px]">
+                    <div className="px-3 py-2 border-b border-gray-700 mb-1">
+                      <p className="text-sm text-white font-medium truncate">{user.displayName}</p>
+                    </div>
+                    <button onClick={logOut} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                      <LogOut className="w-4 h-4" />
+                      خروج
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <button 
+                onClick={signInWithGoogle}
+                className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-2 rounded-full font-medium text-sm transition-colors shadow-sm"
+              >
+                ورود با گوگل
+              </button>
+            )}
           </div>
         </div>
       </header>
+
+      {/* Charge Modal */}
+      <AnimatePresence>
+        {showChargeModal && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
+              className="bg-gray-900 border border-gray-700 rounded-3xl p-6 w-full max-w-sm shadow-2xl"
+              dir="rtl"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-white">شارژ حساب</h3>
+                <button onClick={() => setShowChargeModal(false)} className="text-gray-400 hover:text-white p-1">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">مبلغ شارژ (تومان)</label>
+                  <input 
+                    type="number"
+                    value={chargeAmount}
+                    onChange={(e) => setChargeAmount(e.target.value)}
+                    className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                    placeholder="مبلغ را وارد کنید..."
+                  />
+                </div>
+                
+                <div className="grid grid-cols-3 gap-2">
+                  {[5000, 10000, 50000].map(amt => (
+                    <button 
+                      key={amt}
+                      onClick={() => setChargeAmount(amt.toString())}
+                      className="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-sm text-gray-300 rounded-lg py-2 transition-colors"
+                    >
+                      {amt.toLocaleString('fa-IR')}
+                    </button>
+                  ))}
+                </div>
+                
+                <button 
+                  onClick={handleCharge}
+                  disabled={isCharging}
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-medium rounded-xl py-3 mt-4 transition-colors flex items-center justify-center gap-2"
+                >
+                  {isCharging ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wallet className="w-5 h-5" />}
+                  پرداخت (شبیه‌ساز)
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Chat Area */}
       <main className="flex-1 overflow-y-auto p-4 z-10 scroll-smooth">
