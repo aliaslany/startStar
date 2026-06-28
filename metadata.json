@@ -1,6 +1,6 @@
 {
-  "name": "Project Initializer",
-  "description": "Ready and waiting for user description.",
+  "name": "ExamBuddy",
+  "description": "An AI chatbot for students to upload their exams and get answers one by one in Persian.",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
