@@ -1,6 +1,6 @@
 {
-  "name": "ExamBuddy",
-  "description": "An AI chatbot for students to upload their exams and get answers one by one in Persian.",
+  "name": "startStar",
+  "description": "Ali Aslani Personal Branding Hub & Flagship Engineering Showcase for Stakeholders",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }

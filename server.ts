@@ -5,16 +5,16 @@ import { GoogleGenAI } from '@google/genai';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import fs from 'fs';
-import * as admin from 'firebase-admin';
-import config from './firebase-applet-config.json';
-
-// Initialize Firebase Admin
+// Initialize Firebase Admin safely with environment variable fallback
+const projectId = process.env.FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID || 'demo-project';
 if (!admin.apps.length) {
-  admin.initializeApp({
-    projectId: config.projectId,
-  });
+  try {
+    admin.initializeApp({ projectId });
+  } catch (err) {
+    console.warn('Firebase Admin mock initialization notice:', err);
+  }
 }
-const db = admin.firestore();
+const db = admin.apps.length ? admin.firestore() : ({} as admin.firestore.Firestore);
 
 // Initialize Gemini
 const ai = new GoogleGenAI({
