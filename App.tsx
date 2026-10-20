@@ -39,6 +39,12 @@ const GithubIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
   </svg>
 );
 
+const LinkedinIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.65 1.65 0 0 0 1.66-1.66 1.66 1.66 0 0 0-1.66-1.65 1.65 1.65 0 0 0-1.65 1.65 1.66 1.66 0 0 0 1.65 1.66m1.39 9.97v-8.37H5.07v8.37h2.78z"/>
+  </svg>
+);
+
 type Language = 'fa' | 'en';
 
 interface Repository {
@@ -359,6 +365,9 @@ export default function App() {
 
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-6 text-sm text-slate-300">
+            <a href="#ventures" className="hover:text-indigo-400 transition-colors">
+              {isRtl ? 'پروژه‌های اصلی' : 'Core Ventures'}
+            </a>
             <a href="#showcase" className="hover:text-indigo-400 transition-colors">
               {isRtl ? '۶ پروژه پرچمدار' : 'Top 6 Repositories'}
             </a>
@@ -374,7 +383,7 @@ export default function App() {
           </nav>
 
           {/* Action buttons */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <button
               onClick={() => setLang(l => l === 'fa' ? 'en' : 'fa')}
               className="px-2.5 py-1.5 rounded-lg border border-white/10 text-xs font-medium text-slate-200 hover:bg-white/5 transition-all flex items-center gap-1.5"
@@ -385,13 +394,24 @@ export default function App() {
             </button>
 
             <a
+              href="https://www.linkedin.com/in/aliaslanik/"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 bg-[#0A66C2]/15 hover:bg-[#0A66C2]/25 border border-[#0A66C2]/30 text-[#70b5f9] px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+              title="LinkedIn: aliaslanik"
+            >
+              <LinkedinIcon className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">LinkedIn</span>
+            </a>
+
+            <a
               href="https://github.com/aliaslany"
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium shadow-md shadow-indigo-600/20 transition-all"
             >
               <GithubIcon className="w-4 h-4" />
-              <span className="hidden sm:inline">{isRtl ? 'گیت‌هاب من' : 'GitHub Profile'}</span>
+              <span className="hidden sm:inline">{isRtl ? 'گیت‌هاب من' : 'GitHub'}</span>
             </a>
           </div>
 
@@ -480,6 +500,66 @@ export default function App() {
             </a>
           </div>
 
+        </div>
+      </section>
+
+      {/* Core Key Ventures (trada & azdast.ir) - strictly without links or extra details */}
+      <section id="ventures" className="py-16 px-4 max-w-6xl mx-auto space-y-8 border-b border-white/5">
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center gap-1.5 text-cyan-400 text-xs font-semibold uppercase tracking-wider">
+            <Sparkles className="w-4 h-4" />
+            <span>{isRtl ? 'پروژه‌های اصلی و راهبردی' : 'Core Strategic Ventures'}</span>
+          </div>
+          <h3 className="text-2xl sm:text-4xl font-bold text-white">
+            {isRtl ? 'مهم‌ترین پروژه‌های من' : 'Main Key Projects'}
+          </h3>
+          <p className="text-slate-400 max-w-2xl mx-auto text-sm">
+            {isRtl 
+              ? 'معرفی اجمالی مهم‌ترین پلتفرم‌ها و سامانه‌های کلیدی توسعه‌یافته توسط علی اصلانی'
+              : 'A concise overview of the primary strategic platforms engineered by Ali Aslani'}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* trada */}
+          <div className="glass-panel rounded-3xl p-7 border border-cyan-500/20 bg-gradient-to-br from-slate-900/90 to-cyan-950/20 space-y-4 relative overflow-hidden">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-mono uppercase px-2.5 py-1 rounded-md bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+                {isRtl ? 'سیستم معاملاتی و الگوریتمی' : 'Algorithmic Trading Platform'}
+              </span>
+              <span className="text-xs text-slate-400 font-mono font-bold">
+                VENTURE
+              </span>
+            </div>
+            <h4 className="text-2xl font-black text-white tracking-tight">
+              trada
+            </h4>
+            <p className="text-slate-300 text-sm leading-relaxed">
+              {isRtl 
+                ? 'سامانه و زیرساخت معاملات الگوریتمی و اجرای خودکار استراتژی‌های مالی بر مبنای تحلیل بلادرنگ داده‌های بازار و مدیریت ریسک موقعیت‌ها.'
+                : 'High-performance algorithmic trading infrastructure designed for automated strategy execution, real-time market data analysis, and risk management.'}
+            </p>
+          </div>
+
+          {/* azdast.ir */}
+          <div className="glass-panel rounded-3xl p-7 border border-indigo-500/20 bg-gradient-to-br from-slate-900/90 to-indigo-950/20 space-y-4 relative overflow-hidden">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-mono uppercase px-2.5 py-1 rounded-md bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+                {isRtl ? 'پلتفرم و بازارگاه آنلاین' : 'Digital Marketplace'}
+              </span>
+              <span className="text-xs text-slate-400 font-mono font-bold">
+                VENTURE
+              </span>
+            </div>
+            <h4 className="text-2xl font-black text-white tracking-tight font-mono">
+              azdast.ir
+            </h4>
+            <p className="text-slate-300 text-sm leading-relaxed">
+              {isRtl 
+                ? 'پلتفرم جامع و بازارگاه دادوستد و معاملات آنلاین، متمرکز بر ارتباط مستقیم، تسهیل فرآیند معامله و ارائه بستر امن تبادلات دیجیتال.'
+                : 'Comprehensive digital marketplace facilitating streamlined peer-to-peer commerce, transaction settlement, and direct buyer-seller connectivity.'}
+            </p>
+          </div>
         </div>
       </section>
 
@@ -1215,6 +1295,16 @@ export default function App() {
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <a
+              href="https://www.linkedin.com/in/aliaslanik/"
+              target="_blank"
+              rel="noreferrer"
+              className="bg-[#0A66C2] hover:bg-[#004182] text-white px-6 py-3 rounded-xl font-medium text-sm transition-all shadow-lg flex items-center gap-2"
+            >
+              <LinkedinIcon className="w-4 h-4" />
+              <span>LinkedIn: aliaslanik</span>
+            </a>
+
+            <a
               href="https://github.com/aliaslany"
               target="_blank"
               rel="noreferrer"
@@ -1225,11 +1315,11 @@ export default function App() {
             </a>
 
             <a
-              href="mailto:a77aslany@gmail.com"
+              href="mailto:a77aslani@gmail.com"
               className="glass-panel hover:bg-white/10 px-6 py-3 rounded-xl font-medium text-sm text-slate-200 transition-all border border-white/10 flex items-center gap-2"
             >
               <Send className="w-4 h-4 text-cyan-400" />
-              <span>a77aslany@gmail.com</span>
+              <span>a77aslani@gmail.com</span>
             </a>
           </div>
 

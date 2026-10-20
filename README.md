@@ -4,6 +4,7 @@
 > **مخزن و وب‌سایت معرفی تخصص، معماری سیستم‌های توزیع‌شده و ۶ پروژه شاخص مهندسی**
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Deploy-success?style=flat-square&logo=github)](https://aliaslany.github.io/startStar/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-aliaslanik-blue?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/aliaslanik/)
 [![Security Audit](https://img.shields.io/badge/Security-Secret%20Scan%20Mitigated-emerald?style=flat-square&logo=shield)](https://github.com/aliaslany/startStar/security/secret-scanning)
 [![Tech Stack](https://img.shields.io/badge/Stack-React%2019%20%7C%20Tailwind%20v4%20%7C%20TypeScript%20%7C%20Vite-indigo?style=flat-square)](https://vitejs.dev)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
@@ -15,6 +16,13 @@
 این مخزن و وب‌اپلیکیشن مربوط به دامنه و وب‌سایت **startStar**، پایگاه ارائه توانمندی‌های مهندسی **علی اصلانی ([@aliaslany](https://github.com/aliaslany))** برای ذینفعان، سرمایه‌گذاران، مدیران ارشد فناوری (CTO) و مشتریان صنعتی است.
 
 این پلتفرم علاوه بر معرفی معماری‌ها، شامل **لابراتوار تعاملی زنده (Interactive Sandbox)** در مرورگر بدون نیاز به هیچ‌گونه سرور خارجی بوده و به صورت ۱۰۰٪ استاتیک روی **GitHub Pages** میزبانی می‌شود.
+
+---
+
+## 💼 پروژه‌های اصلی و راهبردی (Core Key Projects)
+
+- **trada**: سامانه و زیرساخت معاملات الگوریتمی و اجرای خودکار استراتژی‌های مالی بر مبنای تحلیل بلادرنگ داده‌های بازار و مدیریت ریسک موقعیت‌ها.
+- **azdast.ir**: پلتفرم جامع و بازارگاه دادوستد و معاملات آنلاین، متمرکز بر ارتباط مستقیم، تسهیل فرآیند معامله و ارائه بستر امن تبادلات دیجیتال.
 
 ---
 
@@ -63,3 +71,10 @@ npm run build
 ## 🌐 استقرار روی گیت‌هاب پیجز (GitHub Pages Deployment)
 این مخزن با استفاده از GitHub Actions در مسیر `.github/workflows/deploy.yml` با هر بار کامیت روی شاخه `main` به صورت کاملاً خودکار ساخته شده و در دامنه زیر منتشر می‌شود:
 👉 **[https://aliaslany.github.io/startStar/](https://aliaslany.github.io/startStar/)**
+
+---
+
+## 📬 راه‌های ارتباطی (Contact)
+- **ایمیل:** [a77aslani@gmail.com](mailto:a77aslani@gmail.com)
+- **لینکدین:** [linkedin.com/in/aliaslanik](https://www.linkedin.com/in/aliaslanik/)
+- **گیت‌هاب:** [github.com/aliaslany](https://github.com/aliaslany)
