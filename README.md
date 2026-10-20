@@ -68,9 +68,14 @@ npm run build
 
 ---
 
-## 🌐 استقرار روی گیت‌هاب پیجز (GitHub Pages Deployment)
-این مخزن با استفاده از GitHub Actions در مسیر `.github/workflows/deploy.yml` با هر بار کامیت روی شاخه `main` به صورت کاملاً خودکار ساخته شده و در دامنه زیر منتشر می‌شود:
-👉 **[https://aliaslany.github.io/startStar/](https://aliaslany.github.io/startStar/)**
+## 🌐 استقرار بدون نیاز به گیت‌هاب اکشنز (Zero-Actions GitHub Pages Deployment)
+این مخزن با بیلد مستقیم در پوشه `/docs` پیکربندی شده است و **بدون مصرف حتی ۱ دقیقه از سهمیه GitHub Actions** به صورت مستقیم از طریق GitHub Pages میزبانی می‌شود:
+- **تنظیمات مخزن (Settings -> Pages):**
+  - **Source:** `Deploy from a branch`
+  - **Branch:** `main`
+  - **Folder:** `/docs`
+- **آدرس وب‌سایت فعال:**
+  👉 **[https://aliaslany.github.io/startStar/](https://aliaslany.github.io/startStar/)**
 
 ---
 
